@@ -29,17 +29,22 @@ export class AwsS3Service implements CloudStorageService {
       sizeLimit
     } = options;
 
+    const conditions = [
+      ['content-length-range', 0, sizeLimit],
+      ['eq', '$Content-Type', contentType],
+      ['eq', '$key', key],
+    ] as const;
+
+    const metadataConditions = metadata 
+      ? Object.entries(metadata).map(([key, value]) => 
+          ['eq', `$x-amz-meta-${key}`, value] as const
+        )
+      : [];
+
     const { url, fields } = await createPresignedPost(this.s3Client, {
       Bucket: this.bucket,
       Key: key,
-      Conditions: [
-        ['content-length-range', 0, sizeLimit],
-        ['eq', '$Content-Type', contentType],
-        ['eq', '$key', key],
-        ...(metadata ? Object.entries(metadata).map(([key, value]) => 
-          ['eq', `$x-amz-meta-${key}`, value]
-        ) : []),
-      ],
+      Conditions: [...conditions, ...metadataConditions],
       Expires: expiresIn,
       Fields: {
         'Content-Type': contentType,
