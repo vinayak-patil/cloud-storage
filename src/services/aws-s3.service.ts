@@ -4,6 +4,8 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { CloudStorageService, CloudStorageConfig } from '../interfaces/cloud-storage.interface';
 import { GeneratePresignedUrlDto } from '../dto/generate-presigned-url.dto';
 
+type PolicyEntry = ['content-length-range', number, number] | ['eq', string, string];
+
 @Injectable()
 export class AwsS3Service implements CloudStorageService {
   private readonly s3Client: S3Client;
@@ -29,15 +31,15 @@ export class AwsS3Service implements CloudStorageService {
       sizeLimit
     } = options;
 
-    const conditions = [
+    const conditions: PolicyEntry[] = [
       ['content-length-range', 0, sizeLimit],
       ['eq', '$Content-Type', contentType],
       ['eq', '$key', key],
     ];
 
-    const metadataConditions = metadata 
+    const metadataConditions: PolicyEntry[] = metadata 
       ? Object.entries(metadata).map(([key, value]) => 
-          ['eq', `$x-amz-meta-${key}`, value]
+          ['eq', `$x-amz-meta-${key}`, value] as PolicyEntry
         )
       : [];
 
