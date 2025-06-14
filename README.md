@@ -5,7 +5,7 @@ A NestJS package for cloud storage operations with presigned URL support. Curren
 ## Installation
 
 ```bash
-npm install @nestjs/cloud-storage
+npm install git+https://github.com/vinayak-patil/cloud-storage.git
 ```
 
 ## Usage

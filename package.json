@@ -16,11 +16,11 @@
     "aws-s3",
     "presigned-url"
   ],
-  "author": "",
+  "author": "Vinayak Patil",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_USERNAME/cloud-storage.git"
+    "url": "git+https://github.com/vinayak-patil/cloud-storage.git"
   },
   "peerDependencies": {
     "@nestjs/common": "^10.0.0",
