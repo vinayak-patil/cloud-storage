@@ -15,7 +15,7 @@ A NestJS package for cloud storage operations with presigned URL support. Curren
 ## Installation
 
 ```bash
-npm install @tekdi/nestjs-cloud-storage
+npm install git+https://github.com/tekdi/nestjs-cloud-storage.git
 ```
 
 ## Quick Start
