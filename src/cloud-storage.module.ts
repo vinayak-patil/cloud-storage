@@ -28,7 +28,7 @@ export class CloudStorageModule {
           inject: ['CLOUD_STORAGE_CONFIG'],
         },
       ],
-      exports: ['CloudStorageService'],
+      exports: ['CloudStorageService', 'CLOUD_STORAGE_CONFIG'],
     };
   }
 } 
