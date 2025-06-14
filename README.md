@@ -1,43 +1,52 @@
-# @nestjs/cloud-storage
+# @tekdi/nestjs-cloud-storage
 
 A NestJS package for cloud storage operations with presigned URL support. Currently supports AWS S3, with extensibility for other cloud providers.
+
+## Features
+
+- 🔒 Secure direct-to-cloud uploads using presigned URLs
+- 🚀 Support for AWS S3 (extensible to other providers)
+- 📦 Easy integration with NestJS applications
+- 🔄 Configurable expiration times
+- 📝 Metadata support
+- 📏 File size limits
+- 🎯 TypeScript support
 
 ## Installation
 
 ```bash
-npm install git+https://github.com/vinayak-patil/cloud-storage.git
+npm install @tekdi/nestjs-cloud-storage
 ```
 
-## Usage
+## Quick Start
 
-### Basic Setup
+1. Import the module in your `app.module.ts`:
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { CloudStorageModule } from '@nestjs/cloud-storage';
+import { CloudStorageModule } from '@tekdi/nestjs-cloud-storage';
 
 @Module({
   imports: [
     CloudStorageModule.register({
       provider: 'aws',
-      region: 'us-east-1',
+      region: process.env.AWS_REGION,
       credentials: {
-        accessKeyId: 'your-access-key',
-        secretAccessKey: 'your-secret-key',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
-      bucket: 'your-bucket-name',
+      bucket: process.env.AWS_BUCKET,
     }),
   ],
 })
 export class AppModule {}
 ```
 
-### Using the Service
+2. Use the service in your application:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
-import { CloudStorageService } from '@nestjs/cloud-storage';
+import { Injectable, Inject } from '@nestjs/common';
+import { CloudStorageService } from '@tekdi/nestjs-cloud-storage';
 
 @Injectable()
 export class YourService {
@@ -46,11 +55,11 @@ export class YourService {
     private readonly cloudStorageService: CloudStorageService,
   ) {}
 
-  async getPresignedUrl() {
+  async uploadFile() {
     const { url, fields } = await this.cloudStorageService.generatePresignedUrl({
       key: 'path/to/file.jpg',
-      expiresIn: 3600, // URL expires in 1 hour
       contentType: 'image/jpeg',
+      expiresIn: 3600, // URL expires in 1 hour
       metadata: {
         userId: '123',
         category: 'profile',
@@ -63,9 +72,50 @@ export class YourService {
 }
 ```
 
-### API Endpoints
+## Configuration
 
-#### Generate Presigned URL
+### Environment Variables
+
+Create a `.env` file in your project root:
+
+```env
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=us-east-1
+AWS_BUCKET=your-bucket-name
+```
+
+### Module Options
+
+The `CloudStorageModule.register()` method accepts the following configuration:
+
+```typescript
+interface CloudStorageConfig {
+  provider: 'aws'; // Currently only AWS is supported
+  region: string;
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  bucket: string;
+}
+```
+
+## API Reference
+
+### Generate Presigned URL
+
+```typescript
+interface GeneratePresignedUrlDto {
+  key: string;              // The object key in the bucket
+  contentType: string;      // The content type of the file
+  expiresIn?: number;       // URL expiration time in seconds (default: 3600)
+  metadata?: Record<string, string>; // Additional metadata
+  sizeLimit?: number;       // Maximum file size in bytes (default: 10485760 - 10MB)
+}
+```
+
+#### Example Request
 
 ```http
 POST /storage/presigned-url
@@ -73,8 +123,8 @@ Content-Type: application/json
 
 {
   "key": "path/to/file.jpg",
-  "expiresIn": 3600,
   "contentType": "image/jpeg",
+  "expiresIn": 3600,
   "metadata": {
     "userId": "123",
     "category": "profile"
@@ -83,7 +133,8 @@ Content-Type: application/json
 }
 ```
 
-Response:
+#### Example Response
+
 ```json
 {
   "url": "https://your-bucket.s3.amazonaws.com",
@@ -101,9 +152,9 @@ Response:
 }
 ```
 
-### Browser Upload Example
+## Browser Integration
 
-When using the presigned POST URL for direct browser uploads, you can use them with a form like this:
+### HTML Form Example
 
 ```html
 <form action="[URL]" method="post" enctype="multipart/form-data">
@@ -124,37 +175,66 @@ When using the presigned POST URL for direct browser uploads, you can use them w
 </form>
 ```
 
-### Available Options
+### JavaScript Example
 
-The `GeneratePresignedUrlDto` includes the following options:
-
-- `key`: The object key in the bucket
-- `contentType`: The content type of the file (optional)
-- `metadata`: Additional metadata to attach to the object (optional)
-- `expiresIn`: URL expiration time in seconds (default: 3600)
-- `sizeLimit`: Maximum file size in bytes (default: 10485760 - 10MB)
+```javascript
+async function uploadFile(file) {
+  // Get presigned URL from your backend
+  const response = await fetch('/storage/presigned-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      key: `uploads/${file.name}`,
+      contentType: file.type,
+      metadata: { userId: '123' }
+    })
+  });
+  
+  const { url, fields } = await response.json();
+  
+  // Create form data
+  const formData = new FormData();
+  Object.entries(fields).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+  formData.append('file', file);
+  
+  // Upload to S3
+  await fetch(url, {
+    method: 'POST',
+    body: formData
+  });
+}
+```
 
 ## Extending for New Cloud Providers
 
 To add support for a new cloud provider:
 
-1. Create a new service class implementing the `CloudStorageService` interface
-2. Add the new provider case in the `CloudStorageModule.register()` method
-3. Update the `CloudStorageConfig` interface if needed
-
-Example for adding Azure Blob Storage:
+1. Create a new service class implementing the `CloudStorageService` interface:
 
 ```typescript
 @Injectable()
 export class AzureBlobService implements CloudStorageService {
-  // Implementation
+  async generatePresignedUrl(options: GeneratePresignedUrlDto): Promise<{ url: string; fields: Record<string, string> }> {
+    // Implementation
+  }
 }
+```
 
-// In CloudStorageModule
+2. Add the new provider case in the `CloudStorageModule.register()` method:
+
+```typescript
 case 'azure':
   return new AzureBlobService(config);
 ```
 
+3. Update the `CloudStorageConfig` interface if needed.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
 ## License
 
-MIT 
+MIT © Tekdi Technologies 
