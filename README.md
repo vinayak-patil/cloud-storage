@@ -18,6 +18,14 @@ A NestJS package for cloud storage operations with presigned URL support. Curren
 npm install git+https://github.com/tekdi/nestjs-cloud-storage.git
 ```
 
+OR
+```JSON
+ "dependencies": {
+    "@tekdi/nestjs-cloud-storage": "github:tekdi/nestjs-cloud-storage"
+  }
+```
+
+
 ## Quick Start
 
 1. Import the module in your `app.module.ts`:
