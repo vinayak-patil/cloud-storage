@@ -1,14 +1,14 @@
 import { GeneratePresignedUrlDto } from "src/dto/generate-presigned-url.dto";
 
 export interface CloudStorageConfig {
-  provider: 'aws' | 'azure' | 'gcp';
-  region: string;
+  provider?: 'aws' | 'azure' | 'gcp';
+  region?: string;
   credentials: {
     accessKeyId?: string;
     secretAccessKey?: string;
     [key: string]: any;
   };
-  bucket: string;
+  bucket?: string;
 }
 
 
