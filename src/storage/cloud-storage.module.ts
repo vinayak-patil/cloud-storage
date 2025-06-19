@@ -1,5 +1,5 @@
 import { Module, DynamicModule } from '@nestjs/common';
-import { CloudStorageController } from './controllers/cloud-storage.controller';
+import { CloudStorageController } from './cloud-storage.controller';
 import { AwsS3Service } from './services/aws-s3.service';
 import { CloudStorageConfig } from './interfaces/cloud-storage.interface';
 

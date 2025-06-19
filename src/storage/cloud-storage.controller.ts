@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Inject } from '@nestjs/common';
-import { CloudStorageService } from '../interfaces/cloud-storage.interface';
-import { GeneratePresignedUrlDto } from '../dto/generate-presigned-url.dto';
+import { CloudStorageService } from './interfaces/cloud-storage.interface';
+import { GeneratePresignedUrlDto } from './dto/generate-presigned-url.dto';
 
 @Controller('storage')
 export class CloudStorageController {

@@ -1,4 +1,4 @@
-import { GeneratePresignedUrlDto } from "src/dto/generate-presigned-url.dto";
+import { GeneratePresignedUrlDto } from "../dto/generate-presigned-url.dto";
 
 export interface CloudStorageConfig {
   provider?: 'aws' | 'azure' | 'gcp';
