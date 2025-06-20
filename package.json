@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tekdi/nestjs-cloud-storage.git"
+    "url": "git+https://github.com/vinayak-patil/cloud-storage.git#release-1.0.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.1.2",
