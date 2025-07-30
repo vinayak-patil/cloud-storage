@@ -1,6 +1,6 @@
 {
   "name": "@vinayak-patil/cloud-storage",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A NestJS package for cloud storage operations with presigned URL support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
