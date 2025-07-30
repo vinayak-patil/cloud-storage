@@ -1,6 +1,26 @@
-# @tekdi/nestjs-cloud-storage
+# @vinayak-patil/cloud-storage
 
 A NestJS package for cloud storage operations with presigned URL support. Currently supports AWS S3, with extensibility for other cloud providers.
+
+## 🚀 Package Improvements (v1.0.1+)
+
+This package now includes pre-built TypeScript declarations and compiled JavaScript files, eliminating the need for postinstall scripts in consuming projects.
+
+### ✅ What's New
+- **No Postinstall Scripts Required** - Package installs instantly without build steps
+- **Pre-built TypeScript Declarations** - Full TypeScript support out of the box
+- **CI/CD Friendly** - No build tools needed during deployment
+- **Automated Publishing** - GitHub Actions workflow for consistent releases
+- **Smaller Package Size** - Only necessary files included
+- **Better Reliability** - Pre-built files tested before publishing
+
+### 📦 Installation (Updated)
+
+```bash
+npm install @vinayak-patil/cloud-storage
+```
+
+**No postinstall scripts needed in your package.json!**
 
 ## Features
 
@@ -15,14 +35,16 @@ A NestJS package for cloud storage operations with presigned URL support. Curren
 ## Installation
 
 ```bash
-npm install git+https://github.com/tekdi/nestjs-cloud-storage.git
+npm install @vinayak-patil/cloud-storage
 ```
 
-OR
-```JSON
- "dependencies": {
-    "@tekdi/nestjs-cloud-storage": "github:tekdi/nestjs-cloud-storage"
+OR add to your `package.json`:
+```json
+{
+  "dependencies": {
+    "@vinayak-patil/cloud-storage": "^1.0.1"
   }
+}
 ```
 
 
@@ -32,7 +54,7 @@ OR
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { CloudStorageModule } from '@tekdi/nestjs-cloud-storage';
+import { CloudStorageModule } from '@vinayak-patil/cloud-storage';
 
 @Module({
   imports: [
@@ -54,7 +76,7 @@ export class AppModule {}
 
 ```typescript
 import { Injectable, Inject } from '@nestjs/common';
-import { CloudStorageService } from '@tekdi/nestjs-cloud-storage';
+import { CloudStorageService } from '@vinayak-patil/cloud-storage';
 
 @Injectable()
 export class YourService {
